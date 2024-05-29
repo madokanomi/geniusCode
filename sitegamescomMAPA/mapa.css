@@ -26,7 +26,7 @@
 
 .titulotudo2{
   
-  color:rgb(138, 206, 20);
+  color:rgb(255, 255, 255);
   font-size:80px;
   font-family:"Bebas Neue", sans-serif;
   text-shadow: 4px 4px 14px rgba(0,0,0,0.2);
@@ -135,6 +135,8 @@ textarea {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   border-style:none;
   width:46vh;
+  font-size:25px;
+  font-family:"Roboto Condensed", sans-serif;
 }
 
 button {
@@ -163,7 +165,7 @@ button:hover {
 form{
   position:absolute;
   background-color:#004AAD;
-  left:10%;
+  left:7%;
   padding:12px;
   border-radius:10px;
 }
@@ -175,5 +177,9 @@ form{
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   border-style:none;
   width:46vh;
+}
+
+form button{
+  font-size:2vh;
 }
 

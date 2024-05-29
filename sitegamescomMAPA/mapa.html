@@ -18,20 +18,18 @@
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-    // Variáveis globais para armazenar os dados dos marcadores
+   
     var markersData = [];
 
-    // Função para inicializar o mapa
+  
     function initMap() {
-        // Crie um mapa usando Leaflet.js
-        var map = L.map('map').setView([-24.0950, -46.6232], 15); // Coordenadas de Mongaguá e nível de zoom
-
-        // Adicione um mapa de fundo (tile layer)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      
+        var map = L.map('map').setView([-24.0950, -46.6232], 15); 
+     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Carregar marcadores previamente salvos no armazenamento local
+    
         var savedMarkers = JSON.parse(localStorage.getItem('markersData'));
         if (savedMarkers) {
             markersData = savedMarkers;
@@ -44,7 +42,7 @@
                     shadowSize: [41, 41]
                 });
 
-                // Verifica se o marcador foi adicionado por um administrador
+             
                 if (marker.addType === 'admin') {
                     L.marker(marker.latlng, { icon: customIcon }).addTo(map).bindPopup(marker.popupContent);
                 } else {
@@ -53,11 +51,11 @@
             });
         }
 
-        // Função para adicionar marcadores ao clicar no mapa
+       
         function addMarker(e) {
-            // Perguntar ao usuário se ele realmente deseja adicionar o marcador
+           
             if (confirm("Tem certeza de que deseja adicionar este marcador?")) {
-                // Adicione um marcador na posição onde o usuário clicou
+              
                 var marker;
                 if (customMarkerAddType === 'admin') {
                     var customIcon = L.icon({
@@ -72,35 +70,34 @@
                     marker = L.marker(e.latlng).addTo(map);
                 }
 
-                // Adicione um popup ao marcador com os dados personalizados
+                
                 var popupContent = "<strong>Descrição:</strong> " + customMarkerDescription + "<br>" +
                                    "<strong>Tipo de Problema:</strong> " + customMarkerProblemType + "<br>" +
                                    "<strong>Tipo de Adição:</strong> " + customMarkerAddType;
                 marker.bindPopup(popupContent).openPopup();
 
-                // Salvar dados do marcador na lista de marcadores
                 markersData.push({
                     latlng: e.latlng,
                     popupContent: popupContent,
                     addType: customMarkerAddType
                 });
 
-                // Salvar dados do marcador no armazenamento local
+             
                 localStorage.setItem('markersData', JSON.stringify(markersData));
             }
         }
 
-        // Adicione o evento de clique ao mapa para chamar a função addMarker
+       
         map.on('click', addMarker);
     }
 
-    // Função para adicionar marcador personalizado com os dados fornecidos pelo usuário
+   
     function addCustomMarker() {
-        // Obtenha os valores dos campos de entrada
+        
         customMarkerDescription = document.getElementById("markerDescription").value;
         customMarkerProblemType = document.getElementById("problemType").value;
 
-        // Verifique qual opção de tipo de adição foi selecionada
+       
         if (document.getElementById("member").checked) {
             customMarkerAddType = "Membro";
         } else if (document.getElementById("admin").checked) {
@@ -109,21 +106,20 @@
             customMarkerAddType = "Usuário Verificado";
         }
 
-        // Limpe os campos de entrada após adicionar o marcador
+      
         document.getElementById("markerDescription").value = "";
         document.getElementById("problemType").selectedIndex = 0;
         document.getElementById("member").checked = false;
         document.getElementById("admin").checked = false;
     }
 
-    // Função para perguntar ao usuário antes de adicionar o marcador
+   
     function confirmAddCustomMarker() {
         if (confirm("Tem certeza de que deseja adicionar este marcador?")) {
             addCustomMarker();
         }
     }
 
-    // Chame a função initMap() quando a página for carregada
     window.onload = initMap;
 </script>
 </head>
@@ -134,7 +130,7 @@
             <ul class="nav-list">
                 <li><a href="pginicials.html">Início</a></li>
                 <li><a href="sobrenos.html">Sobre</a></li>
-                <li><a href="noticias.html">Notícias</a></li>
+                <li><a href="noscontate.html">Nos Contate</a></li>
                 <li><a style="color:rgb(69, 116, 0)" href="mapa.html">Relatos</a></li>
                <img class="icon" src="iconperfils.png">
 </ul>
@@ -142,7 +138,7 @@
 </header>
 <main></main>
 <br>
-<img class="banner" src="pessoapc.jpg">
+<img class="banner" src="formulario.png">
 <label class="titulo">Relatos de Comunidade</label>
 <label class="desc">Visualize os marcadores adicionados pelos usuários e cadastre novos! Tenha acesso as informações climáticas locais em tempo real e poste seus relatos!
 </label>
@@ -192,8 +188,9 @@
 <label class="titulotudo">Relatos da Comunidade</label><br></center>
 <br><br>
 <div class="container">
-    <label class="titulotudo2">Postagens</label>
-    <form id="postForm">   
+
+    <form id="postForm"> 
+        <label class="titulotudo2"> Escreva Seu Relato</label>  <br>
         <input class="textogames" type="text" id="userName" placeholder="Nome do usuário"><br><br>
         <input  class="textogames" type="text" id="postContent" placeholder="Insira Subtítulo"><br><br>
         <textarea id="problemReport" placeholder="Relato do problema"></textarea><br><br>

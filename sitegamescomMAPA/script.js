@@ -1,40 +1,40 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const postForm = document.getElementById('postForm');
-    const postContent = document.getElementById('postContent');
-    const postsContainer = document.getElementById('posts');
-    const posts = JSON.parse(localStorage.getItem('posts')) || [];
 
-    // Exibir postagens ao carregar a página
-    posts.forEach(post => addPost(post));
+function salvarCadastro() {
+    var nome = document.getElementById("nome").value;
+    var email = document.getElementById("email").value;
+    var telefone = document.getElementById("telefone").value;
+    var senha = document.getElementById("senha").value;
+    var confirmarSenha = document.getElementById("Confirmasenha").value;
 
-    postForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const content = postContent.value.trim();
-        if (content !== '') {
-            addPost(content);
-            posts.push(content);
-            localStorage.setItem('posts', JSON.stringify(posts));
-            postContent.value = '';
-        }
-    });
+   
+    var cadastro = {
+        nome: nome,
+        email: email,
+        telefone: telefone,
+        senha: senha
+    };
+    localStorage.setItem('cadastro', JSON.stringify(cadastro));
 
-    function addPost(content) {
-        const postDiv = document.createElement('div');
-        postDiv.classList.add('post');
-        const postContent = document.createElement('p');
-        postContent.textContent = content;
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Excluir';
-        deleteButton.addEventListener('click', function () {
-            postDiv.remove();
-            const index = posts.indexOf(content);
-            if (index !== -1) {
-                posts.splice(index, 1);
-                localStorage.setItem('posts', JSON.stringify(posts));
-            }
-        });
-        postDiv.appendChild(postContent);
-        postDiv.appendChild(deleteButton);
-        postsContainer.appendChild(postDiv);
+ 
+    window.location.href = "login.html";
+
+
+    return false;
+}
+
+function validarLogin() {
+    var email = document.getElementById("loginEmail").value;
+    var senha = document.getElementById("loginSenha").value;
+
+    
+    var cadastro = JSON.parse(localStorage.getItem('cadastro'));
+    if (cadastro && cadastro.email === email && cadastro.senha === senha) {
+      
+        window.location.href = "pginicials.html"; 
+        return true;
+    } else {
+    
+        alert("Email ou senha incorretos");
+        return false;
     }
-});
+}

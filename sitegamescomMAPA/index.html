@@ -6,29 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-   <script>  
-    function salvarNome() {
-        var nome = document.getElementById("nome").value; // ou onde quer que o nome seja inserido
-        localStorage.setItem("nome", nome); // Salvando o nome na localStorage
-    }
-</script>
-
-</script>
     <title>Cadastro</title>
+    <script src="script.js"></script>
 </head>
 
 <body>
     <img class="imgdaora" src="logoicons-removebg-preview.png">
-   <br> <div class="box">
+    <br>
+    <div class="box">
         <div class="img-box">
             <img src="">
         </div>
         <div class="form-box">
             <h2>Criar Conta</h2>
-            <p> Já é um membro? <a href="login.html"> Login </a> </p>
-            <form action="pginicials.html">
+            <p>Já é um membro? <a href="login.html">Login</a></p>
+            <div class="form">
+            <form id="cadastroForm" onsubmit="return salvarCadastro()">
                 <div class="input-group">
-                    <label for="nome"> Nome Completo</label>
+                    <label for="nome">Nome Completo</label>
                     <input type="text" id="nome" placeholder="Digite o seu nome completo" required>
                 </div>
 
@@ -49,15 +44,40 @@
 
                 <div class="input-group w50">
                     <label for="Confirmarsenha">Confirmar Senha</label>
-                    <input type="password" id="Confirmarsenha" placeholder="Confirme a senha" required>
+                    <input type="password" id="Confirmasenha" placeholder="Confirme a senha" required>
                 </div>
 
                 <div class="input-group">
-                    <button onclick="salvarNome()">Cadastrar</button>
+                    <button type="submit">Cadastrar</button>
                 </div>
-
+</div>
             </form>
         </div>
     </div>
+
+    <script>
+        function salvarCadastro() {
+            var nome = document.getElementById("nome").value;
+            var email = document.getElementById("email").value;
+            var telefone = document.getElementById("telefone").value;
+            var senha = document.getElementById("senha").value;
+            var confirmarSenha = document.getElementById("Confirmasenha").value;
+
+        
+            var cadastro = {
+                nome: nome,
+                email: email,
+                telefone: telefone,
+                senha: senha
+            };
+            localStorage.setItem('cadastro', JSON.stringify(cadastro));
+
+            window.location.href = "login.html";
+
+       
+            return false;
+        }
+    </script>
 </body>
+
 </html>
