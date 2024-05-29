@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela Inicial</title>
+    <link rel="stylesheet" href="pginicial.css">
+    <link rel="stylesheet" href="mapa.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@100..900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    // Variáveis globais para armazenar os dados dos marcadores
+    var markersData = [];
+
+    // Função para inicializar o mapa
+    function initMap() {
+        // Crie um mapa usando Leaflet.js
+        var map = L.map('map').setView([-24.0950, -46.6232], 15); // Coordenadas de Mongaguá e nível de zoom
+
+        // Adicione um mapa de fundo (tile layer)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Carregar marcadores previamente salvos no armazenamento local
+        var savedMarkers = JSON.parse(localStorage.getItem('markersData'));
+        if (savedMarkers) {
+            markersData = savedMarkers;
+            markersData.forEach(function(marker) {
+                var customIcon = L.icon({
+                    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                });
+
+                // Verifica se o marcador foi adicionado por um administrador
+                if (marker.addType === 'admin') {
+                    L.marker(marker.latlng, { icon: customIcon }).addTo(map).bindPopup(marker.popupContent);
+                } else {
+                    L.marker(marker.latlng).addTo(map).bindPopup(marker.popupContent);
+                }
+            });
+        }
+
+        // Função para adicionar marcadores ao clicar no mapa
+        function addMarker(e) {
+            // Perguntar ao usuário se ele realmente deseja adicionar o marcador
+            if (confirm("Tem certeza de que deseja adicionar este marcador?")) {
+                // Adicione um marcador na posição onde o usuário clicou
+                var marker;
+                if (customMarkerAddType === 'admin') {
+                    var customIcon = L.icon({
+                        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    });
+                    marker = L.marker(e.latlng, { icon: customIcon }).addTo(map);
+                } else {
+                    marker = L.marker(e.latlng).addTo(map);
+                }
+
+                // Adicione um popup ao marcador com os dados personalizados
+                var popupContent = "<strong>Descrição:</strong> " + customMarkerDescription + "<br>" +
+                                   "<strong>Tipo de Problema:</strong> " + customMarkerProblemType + "<br>" +
+                                   "<strong>Tipo de Adição:</strong> " + customMarkerAddType;
+                marker.bindPopup(popupContent).openPopup();
+
+                // Salvar dados do marcador na lista de marcadores
+                markersData.push({
+                    latlng: e.latlng,
+                    popupContent: popupContent,
+                    addType: customMarkerAddType
+                });
+
+                // Salvar dados do marcador no armazenamento local
+                localStorage.setItem('markersData', JSON.stringify(markersData));
+            }
+        }
+
+        // Adicione o evento de clique ao mapa para chamar a função addMarker
+        map.on('click', addMarker);
+    }
+
+    // Função para adicionar marcador personalizado com os dados fornecidos pelo usuário
+    function addCustomMarker() {
+        // Obtenha os valores dos campos de entrada
+        customMarkerDescription = document.getElementById("markerDescription").value;
+        customMarkerProblemType = document.getElementById("problemType").value;
+
+        // Verifique qual opção de tipo de adição foi selecionada
+        if (document.getElementById("member").checked) {
+            customMarkerAddType = "Membro";
+        } else if (document.getElementById("admin").checked) {
+            customMarkerAddType = "Agente Governamental";
+        } else if (document.getElementById("verified").checked) {
+            customMarkerAddType = "Usuário Verificado";
+        }
+
+        // Limpe os campos de entrada após adicionar o marcador
+        document.getElementById("markerDescription").value = "";
+        document.getElementById("problemType").selectedIndex = 0;
+        document.getElementById("member").checked = false;
+        document.getElementById("admin").checked = false;
+    }
+
+    // Função para perguntar ao usuário antes de adicionar o marcador
+    function confirmAddCustomMarker() {
+        if (confirm("Tem certeza de que deseja adicionar este marcador?")) {
+            addCustomMarker();
+        }
+    }
+
+    // Chame a função initMap() quando a página for carregada
+    window.onload = initMap;
+</script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a class="logo" href="pginicials.html"><img class="imgdaora" src="logoicons-removebg-preview.png"></a>
+            <ul class="nav-list">
+                <li><a href="pginicials.html">Início</a></li>
+                <li><a href="sobrenos.html">Sobre</a></li>
+                <li><a href="noticias.html">Notícias</a></li>
+                <li><a style="color:rgb(69, 116, 0)" href="mapa.html">Relatos</a></li>
+               <img class="icon" src="iconperfils.png">
+</ul>
+</nav>
+</header>
+<main></main>
+<br>
+<img class="banner" src="pessoapc.jpg">
+<label class="titulo">Relatos de Comunidade</label>
+<label class="desc">Visualize os marcadores adicionados pelos usuários e cadastre novos! Tenha acesso as informações climáticas locais em tempo real e poste seus relatos!
+</label>
+<br><br><br><center>
+<label class="titulotudo">Marcadores da Comunidade</label></center>
+<br>
+<div id="map" class="map"></div>
+<div class="relatorio">
+    <label class="titulomapa">Adicione seu Marcador</label>
+<div>
+    <div class="opcoes">
+    <label for="markerDescription">Descrição do marcador</label><br> 
+    <input class="selecao" maxlength="49 "type="text"  id="markerDescription" placeholder="Digite a descrição">
+    <br><br>
+    <label for="problemType">Tipo de Problema:</label><br>
+    <select class="opcaodavida" id="problemType">
+        <option value="Acidentes Ambientais">Acidentes Ambientais</option>
+        <option value="Obra em Construção">Obra em Construção</option>
+        <option value="Alto Indíce de Trânsito">Alto Indíce de Trânsito</option>
+        <option value="Acidente">Acidente</option>
+       
+    </select>
+    <br><br>
+
+    <label>Tipo de Adição:</label>
+    <br>
+        <input type="radio" id="member" name="addType" value="member">
+        <label for="member">Membro</label>
+   
+        <br>
+        <input type="radio" id="admin" name="addType" value="admin">
+        <label for="admin">Agente Governamental</label>
+         
+        <br>
+        <input type="radio" id="verified" name="addType" value="verified">
+        <label for="admin">Usuário Verificado</label>
+    </div>
+</div>      <br>
+<button class="button-79" onclick="confirmAddCustomMarker()">Adicionar Marcador Personalizado</button></div>
+</div><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<center>
+    <label class="titulotudo">Mapa Climático</label><br>
+<iframe width="70%" height="600vh" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=default&metricTemp=default&metricWind=default&zoom=11&overlay=wind&product=ecmwf&level=surface&lat=-24.111&lon=-46.614" frameborder="0"></iframe>
+</center>
+
+<br><br><br><br><center>
+<label class="titulotudo">Relatos da Comunidade</label><br></center>
+<br><br>
+<div class="container">
+    <label class="titulotudo2">Postagens</label>
+    <form id="postForm">   
+        <input class="textogames" type="text" id="userName" placeholder="Nome do usuário"><br><br>
+        <input  class="textogames" type="text" id="postContent" placeholder="Insira Subtítulo"><br><br>
+        <textarea id="problemReport" placeholder="Relato do problema"></textarea><br><br>
+        <input class="textogames" type="text" id="city" placeholder="Cidade"><br><br>
+        <input class="textogames" type="text" id="neighborhood" placeholder="Bairro"><br><br>
+        <input class="textogames" type="text" id="address" placeholder="Endereço"><br><br>
+     <br>
+        <button type="submit">Postar</button>
+    </form>
+    <div id="posts"></div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const postForm = document.getElementById('postForm');
+    const postContent = document.getElementById('postContent');
+    const userName = document.getElementById('userName');
+    const city = document.getElementById('city');
+    const neighborhood = document.getElementById('neighborhood');
+    const address = document.getElementById('address');
+    const problemReport = document.getElementById('problemReport');
+    const postsContainer = document.getElementById('posts');
+    const posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+    // Exibir postagens ao carregar a página
+    posts.forEach(post => addPost(post));
+
+    postForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const content = postContent.value.trim();
+        const userNameValue = userName.value.trim();
+        const cityValue = city.value.trim();
+        const neighborhoodValue = neighborhood.value.trim();
+        const addressValue = address.value.trim();
+        const problemValue = problemReport.value.trim();
+        if (content !== '' && userNameValue !== '' && cityValue !== '' && neighborhoodValue !== '' && addressValue !== '' && problemValue !== '') {
+            const postObject = {
+                content: content,
+                userName: userNameValue,
+                city: cityValue,
+                neighborhood: neighborhoodValue,
+                address: addressValue,
+                problem: problemValue
+            };
+            addPost(postObject);
+            posts.push(postObject);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            clearForm();
+        }
+    });
+
+    function addPost(post) {
+        const postDiv = document.createElement('div');
+        postDiv.classList.add('post');
+        const postContent = document.createElement('p');
+        const userNameContent = document.createElement('p');
+        userNameContent.textContent = `Nome do Usuário: ${post.userName}`;
+        const cityContent = document.createElement('p');
+        cityContent.textContent = `Cidade: ${post.city}`;
+        const neighborhoodContent = document.createElement('p');
+        neighborhoodContent.textContent = `Bairro: ${post.neighborhood}`;
+        const addressContent = document.createElement('p');
+        addressContent.textContent = `Endereço: ${post.address}`;
+        const problemContent = document.createElement('p');
+        problemContent.textContent = `Relato do Problema: ${post.problem}`;
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Excluir';
+        deleteButton.addEventListener('click', function () {
+            postDiv.remove();
+            const index = posts.indexOf(post);
+            if (index !== -1) {
+                posts.splice(index, 1);
+                localStorage.setItem('posts', JSON.stringify(posts));
+            }
+        });
+        postDiv.appendChild(postContent);
+        postDiv.appendChild(userNameContent);
+        postDiv.appendChild(cityContent);
+        postDiv.appendChild(neighborhoodContent);
+        postDiv.appendChild(addressContent);
+        postDiv.appendChild(problemContent);
+        postDiv.appendChild(deleteButton);
+        postsContainer.appendChild(postDiv);
+    }
+
+    function clearForm() {
+        postContent.value = '';
+        userName.value = '';
+        city.value = '';
+        neighborhood.value = '';
+        address.value = '';
+        problemReport.value = '';
+    }
+});
+
+</script>
+</body>
+</html>
